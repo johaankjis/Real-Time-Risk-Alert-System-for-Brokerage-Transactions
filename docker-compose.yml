@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (optional, comment out if using SQLite)
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: risk_alert_system
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/01_create_schema.sql:/docker-entrypoint-initdb.d/01_create_schema.sql
+      - ./scripts/02_seed_initial_data.sql:/docker-entrypoint-initdb.d/02_seed_initial_data.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Risk Alert System
+  risk-system:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_TYPE: postgresql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: risk_alert_system
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      CLIENT_EXPOSURE_THRESHOLD: 1000000
+      SYMBOL_EXPOSURE_THRESHOLD: 500000
+      TRANSACTION_VELOCITY_THRESHOLD: 10
+      ANOMALY_DETECTION_THRESHOLD: 3.0
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./scripts:/app/scripts
+      - risk_data:/app/data
+    command: python scripts/run_all.py
+
+volumes:
+  postgres_data:
+  risk_data:
