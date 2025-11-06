@@ -18,7 +18,7 @@ For production deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Architecture
 
-\`\`\`
+```
 risk-alert-system/
 ├── scripts/
 │   ├── 01_create_schema.sql       # Database schema
@@ -37,23 +37,23 @@ risk-alert-system/
 ├── QUICKSTART.md                  # Quick start guide
 ├── DEPLOYMENT.md                  # Deployment guide
 └── README.md                      # This file
-\`\`\`
+```
 
-**Note**: The \`package.json\` file in the root directory is not used by this Python-based system and can be ignored.
+**Note**: The `package.json` file in the root directory is not used by this Python-based system and can be ignored.
 
 ## Setup Instructions
 
 ### 1. Install Dependencies
 
-\`\`\`bash
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
 
 ### 2. Configure Environment (Optional)
 
 The system works out-of-the-box with SQLite and default settings. For custom configuration:
 
-\`\`\`bash
+```bash
 # Create a .env file with your settings
 cat > .env << EOF
 # Database Configuration
@@ -79,34 +79,34 @@ SMTP_PASSWORD=your-app-password
 STREAMLIT_SERVER_PORT=8501
 STREAMLIT_SERVER_ADDRESS=localhost
 EOF
-\`\`\`
+```
 
-See \`DEPLOYMENT.md\` for detailed configuration options.
+See `DEPLOYMENT.md` for detailed configuration options.
 
 ### 3. Initialize Database
 
 **For SQLite (default, easiest for testing):**
-\`\`\`bash
+```bash
 python scripts/database_config.py
-\`\`\`
+```
 
 **For PostgreSQL:**
-\`\`\`bash
+```bash
 # Create database
 createdb risk_alert_system
 
 # Run schema scripts
 psql -U postgres -d risk_alert_system -f scripts/01_create_schema.sql
 psql -U postgres -d risk_alert_system -f scripts/02_seed_initial_data.sql
-\`\`\`
+```
 
 ### 4. Run the System
 
 **Option A: Run All Components Together (Recommended)**
 
-\`\`\`bash
+```bash
 python scripts/run_all.py
-\`\`\`
+```
 
 This single command starts all three components:
 - Risk monitoring engine
@@ -120,19 +120,19 @@ Press `Ctrl+C` to stop all components.
 If you need more control, run each component in a separate terminal:
 
 **Terminal 1 - Start the Risk Engine:**
-\`\`\`bash
+```bash
 python scripts/risk_engine.py
-\`\`\`
+```
 
 **Terminal 2 - Start the Transaction Simulator:**
-\`\`\`bash
+```bash
 python scripts/transaction_simulator.py
-\`\`\`
+```
 
 **Terminal 3 - Launch the Dashboard:**
-\`\`\`bash
+```bash
 streamlit run scripts/streamlit_dashboard.py
-\`\`\`
+```
 
 Access the dashboard at: http://localhost:8501
 
@@ -140,7 +140,7 @@ Access the dashboard at: http://localhost:8501
 
 You can also run the system using Docker:
 
-\`\`\`bash
+```bash
 # Build and start all services (includes PostgreSQL)
 docker-compose up -d
 
@@ -151,7 +151,7 @@ docker-compose logs -f risk-system
 
 # Stop services
 docker-compose down
-\`\`\`
+```
 
 For more deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
